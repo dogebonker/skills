@@ -6,6 +6,7 @@ A hand-picked collection of custom AI coding skills.
 | --- | --- |
 | [brief](skills/brief/SKILL.md) | Short, decision-focused status summaries. |
 | [bug-review](skills/bug-review/SKILL.md) | Evidence-based defect reviews with installed static scanners. |
+| [explain-decisions](skills/explain-decisions/SKILL.md) | Interactive pages that teach a decision before you answer it, plus a per-feature decision log. |
 | [feature-pipeline](skills/feature-pipeline/SKILL.md) | A staged workflow for substantial features and new projects. |
 | [show-me](skills/show-me/SKILL.md) | Concise visual explanations and diagrams. |
 

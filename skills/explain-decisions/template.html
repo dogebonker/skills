@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decisions</title>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #fff; --ink: #1a1a19; --muted: #6b6a66; --line: #e6e5e1; --soft: #f1f0ec;
+  --accent: #2f5bd3; --ok: #1f8a4c; --bad: #c2362b; --new: #2f5bd3;
+  --l0: #e9f5ee; --l1: #f6f1d9; --l2: #fbe3c7; --l3: #f8d3cf;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121211; --panel: #1b1b1a; --ink: #f2f1ee; --muted: #a09f9a; --line: #2c2c2a; --soft: #242422;
+          --accent: #7aa2ff; --ok: #4fd18b; --bad: #ff7b70; --new: #7aa2ff;
+          --l0: #1d5236; --l1: #5c5113; --l2: #7a4110; --l3: #7d2620; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+main { max-width: 860px; margin: 0 auto; padding: 24px 16px 96px; overflow-wrap: anywhere; }
+h1 { font-size: 1.35rem; margin: 0; } h2 { font-size: 1.3rem; line-height: 1.3; margin: 0; } h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 28px 0 10px; }
+h3 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.ids { color: var(--muted); font: 12px ui-monospace, monospace; margin: 4px 0 0; overflow-wrap: anywhere; }
+.recap { color: var(--muted); margin: 6px 0 0; }
+.dots { display: flex; gap: 8px; margin: 14px 0 0; } .dots a { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 600; } .dots a.done { background: var(--ok); color: var(--bg); }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin: 20px 0; }
+.q header { display: flex; gap: 12px; align-items: flex-start; }
+.num { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--panel); display: grid; place-items: center; font-weight: 700; }
+.decided { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--l0); border: 1px solid var(--ok); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.pill { background: var(--soft); border-radius: 99px; padding: 4px 12px; font-size: 14px; }
+.plain { font-size: 1.15rem; line-height: 1.5; margin: 18px 0 0; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); border-radius: 0 10px 10px 0; }
+.term { border-bottom: 1.5px dotted var(--accent); position: relative; cursor: help; outline: none; }
+.term:hover::after, .term:focus::after { content: attr(data-def); position: absolute; left: 0; top: 1.6em; z-index: 5; width: max-content; max-width: 260px; background: var(--ink); color: var(--panel); font-size: 13px; line-height: 1.4; padding: 6px 10px; border-radius: 8px; font-weight: 400; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs button { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; padding: 6px 14px; font-size: 14px; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.stage { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.stage-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.chip { font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; background: var(--l0); color: var(--ok); } .chip.prop { background: var(--soft); color: var(--accent); }
+.play { border: 0; background: var(--accent); color: var(--bg); border-radius: 8px; padding: 6px 14px; font-size: 14px; }
+.flow { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0; margin: 14px 0 0; }
+.flow li { display: flex; align-items: center; gap: 6px; } .flow li + li::before { content: "→"; color: var(--muted); }
+.node { border: 2px solid var(--line); background: var(--soft); border-radius: 10px; padding: 8px 12px; font-size: 14px; transition: transform .2s, box-shadow .2s; }
+.node.ok { border-color: var(--ok); } .node.bad { border-color: var(--bad); } .node.new { border-color: var(--new); border-style: dashed; }
+.node.active { transform: translateY(-2px); box-shadow: 0 0 0 3px var(--accent); }
+.detail { min-height: 3em; margin: 12px 0 0; padding: 10px 12px; background: var(--soft); border-radius: 8px; }
+.result { font-weight: 600; margin: 10px 0 0; } .result.ok { color: var(--ok); } .result.bad { color: var(--bad); }
+.grid { display: grid; grid-template-columns: minmax(64px, auto) repeat(var(--cols), 1fr); gap: 4px; }
+.grid .h { font-size: 13px; font-weight: 600; padding: 4px 6px; } .grid .area { font-size: 14px; color: var(--muted); padding: 8px 6px; }
+.cell { border: 0; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; text-align: left; }
+.cell.l0 { background: var(--l0); } .cell.l1 { background: var(--l1); } .cell.l2 { background: var(--l2); } .cell.l3 { background: var(--l3); }
+.cell.active { outline: 2px solid var(--ink); }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.quiz p { margin: 0 0 8px; font-weight: 600; } .quiz button { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 8px 12px; margin: 6px 0; }
+.quiz button.right { border-color: var(--ok); background: var(--l0); } .quiz button.wrong { border-color: var(--bad); background: var(--l3); }
+.quiz .fb { font-weight: 400; color: var(--muted); margin-top: 8px; }
+.pick, .owner { display: flex; gap: 14px; align-items: flex-start; margin-top: 12px; }
+.big { flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--ok); color: var(--bg); display: grid; place-items: center; font-size: 1.4rem; font-weight: 800; }
+.avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: var(--bg); display: grid; place-items: center; font-size: 1.2rem; font-weight: 700; }
+.pick p, .owner p { margin: 0 0 6px; }
+.sure i { display: inline-block; width: 18px; height: 6px; border-radius: 3px; background: var(--line); margin-right: 3px; } .sure i.on { background: var(--ok); } .sure { font-size: 13px; color: var(--muted); }
+.caveat { background: var(--l2); border-radius: 8px; padding: 8px 12px; }
+blockquote { margin: 6px 0; padding: 10px 12px; background: var(--soft); border-radius: 8px; font-size: 14px; }
+.ghost { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 4px 10px; font-size: 13px; }
+.choose { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.choose button { border: 2px solid var(--line); background: var(--panel); border-radius: 10px; padding: 10px 14px; }
+.choose button[aria-pressed="true"] { border-color: var(--ok); background: var(--l0); }
+details { margin-top: 16px; } summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+pre { overflow-x: auto; background: var(--soft); padding: 10px; border-radius: 8px; font-size: 12px; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--ink); color: var(--panel); display: flex; justify-content: center; align-items: center; gap: 12px; padding: 12px 16px; }
+.bar button { border: 0; background: var(--panel); color: var(--ink); border-radius: 8px; padding: 6px 14px; font-weight: 600; }
+@media (max-width: 560px) {
+  .flow { flex-direction: column; align-items: stretch; } .flow li { flex-direction: column; align-items: stretch; } .flow li + li::before { content: "↓"; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .node { transition: none; } }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div class="bar"><span>Your reply: <b id="reply">pick an option below</b></span><button id="copyReply">Copy</button></div>
+
+<!-- Replace only this JSON. The page renders itself. Schema: SKILL.md. -->
+<script id="data" type="application/json">
+{
+  "title": "Billing cleanup",
+  "goal": "Invoices show the same total everywhere: on the page, in the PDF and in reports.",
+  "decided": [
+    "Totals stay in the account's currency.",
+    "Old PDFs are not regenerated."
+  ],
+  "terms": {
+    "line": "One item on an invoice: description, quantity and price.",
+    "stored total": "A copy of the invoice total saved in its own database column.",
+    "edit path": "Any code that changes an invoice line: the page, the API, or CSV import.",
+    "reports team": "The team whose monthly revenue reports read invoice totals."
+  },
+  "questions": [
+    {
+      "ask": "Save each invoice's total, or add up its lines every time it's shown?",
+      "ids": "BILL-142 · PR #318 · billing/models.py",
+      "whyNow": "The cleanup PR can't merge, because its migration depends on this.",
+      "ifSilent": "The PR waits, and totals keep drifting.",
+      "plain": "An invoice total is the sum of its lines. We can save the total, or add it up whenever someone opens the invoice.",
+      "views": [
+        {
+          "name": "Today",
+          "label": "Current — observed",
+          "ref": "billing/views.py:88-95",
+          "ok": false,
+          "result": "The page and the PDF show different totals.",
+          "flow": [
+            {
+              "t": "Invoice saved",
+              "state": "ok",
+              "d": "Three lines add up to 1,250.00, and that total is saved."
+            },
+            {
+              "t": "Line edited",
+              "d": "Someone changes a quantity through CSV import."
+            },
+            {
+              "t": "Total not updated",
+              "state": "bad",
+              "d": "CSV import updates the line but not the stored total."
+            },
+            {
+              "t": "Two totals",
+              "state": "bad",
+              "d": "The page adds up lines: 1,310.00. The PDF reads the stored total: 1,250.00."
+            }
+          ]
+        },
+        {
+          "name": "A · Stop saving",
+          "label": "Proposed",
+          "ok": true,
+          "result": "One source of truth, at the cost of adding up on every view.",
+          "flow": [
+            {
+              "t": "Line edited",
+              "d": "Same CSV import as today."
+            },
+            {
+              "t": "Nothing else saved",
+              "state": "new",
+              "d": "The stored total column is gone."
+            },
+            {
+              "t": "Lines added up",
+              "state": "new",
+              "d": "Page, PDF and reports all add up the lines when they need a total."
+            },
+            {
+              "t": "Same total",
+              "state": "ok",
+              "d": "Every place shows 1,310.00."
+            }
+          ]
+        },
+        {
+          "name": "B · Keep saving",
+          "label": "Proposed",
+          "ok": true,
+          "result": "Totals agree, as long as every edit path remembers to update them.",
+          "flow": [
+            {
+              "t": "Line edited",
+              "d": "Same CSV import as today."
+            },
+            {
+              "t": "Total recalculated",
+              "state": "new",
+              "d": "Each edit path recalculates and saves the total."
+            },
+            {
+              "t": "Same total",
+              "state": "ok",
+              "d": "Every place shows 1,310.00."
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "key": "A",
+          "name": "Stop saving, always add up",
+          "radius": {
+            "code": {
+              "level": 2,
+              "text": "Removes the column and the 2 places that write it."
+            },
+            "data": {
+              "level": 2,
+              "text": "A migration drops a column that reports read."
+            },
+            "people": {
+              "level": 2,
+              "text": "The reports team must switch their queries."
+            },
+            "users": {
+              "level": 0,
+              "text": "Nothing, if the invoice list stays fast."
+            },
+            "undo": {
+              "level": 1,
+              "text": "Re-adding the column means backfilling every total."
+            },
+            "cost": {
+              "level": 1,
+              "text": "About a day, plus the reports team's change."
+            }
+          }
+        },
+        {
+          "key": "B",
+          "name": "Keep saving, update on every edit",
+          "radius": {
+            "code": {
+              "level": 1,
+              "text": "Recalculate the total in the 3 edit paths."
+            },
+            "data": {
+              "level": 0,
+              "text": "No schema change."
+            },
+            "people": {
+              "level": 0,
+              "text": "None."
+            },
+            "users": {
+              "level": 0,
+              "text": "Nothing."
+            },
+            "undo": {
+              "level": 0,
+              "text": "Easy. Moving to A later is mostly deletions."
+            },
+            "cost": {
+              "level": 2,
+              "text": "Small now, but every new edit path must remember."
+            }
+          }
+        }
+      ],
+      "quiz": [
+        {
+          "q": "If we choose A, where does the PDF get its total?",
+          "choices": [
+            "From the stored total column",
+            "By adding up the invoice lines",
+            "From the reports"
+          ],
+          "answer": 1,
+          "explain": "A removes the stored total, so everything adds up the lines itself."
+        },
+        {
+          "q": "Why do the page and the PDF disagree today?",
+          "choices": [
+            "CSV import doesn't update the stored total",
+            "The PDF is cached",
+            "Currency rounding"
+          ],
+          "answer": 0,
+          "explain": "The page adds up lines, but the PDF trusts a total that CSV import never updated."
+        }
+      ],
+      "pick": {
+        "key": "A",
+        "sure": "line",
+        "why": "The stored total holds nothing the lines don't, and keeping both is what drifted.",
+        "drawback": "The invoice list adds up lines on every load.",
+        "caveat": "Not measured: the list page shows 500 invoices. If adding up lines there is slow, B is safer."
+      },
+      "owner": {
+        "who": "You",
+        "why": "The billing ticket is assigned to you. The reports team reads the column, so tell them.",
+        "message": "Hi, we found the stored invoice total drifts from its lines after CSV imports. We plan to drop the column and add up lines instead. Do any reports depend on it?",
+        "safeDefault": "B. No schema change, and moving to A later is mostly deletions."
+      },
+      "evidence": "invoice 1042: stored 1,250.00 | lines sum 1,310.00\n3 of 200 sampled invoices differ"
+    }
+  ]
+}
+</script>
+
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const AREAS = [['code', 'Code'], ['data', 'Data'], ['people', 'People'], ['users', 'Users'], ['undo', 'Undo'], ['cost', 'Cost']];
+const LEVELS = ['None', 'Low', 'Medium', 'High'];
+const SURE = { said: [1, 'Only my word so far'], line: [2, 'I pointed at the line'], ran: [3, 'I ran it'] };
+const answers = {};
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const defs = Object.fromEntries(Object.entries(D.terms || {}).map(([k, v]) => [k.toLowerCase(), v]));
+const keys = Object.keys(defs).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+const termRe = keys.length ? new RegExp('\\b(' + keys.join('|') + ')(s?)\\b', 'gi') : null;
+// Escapes text and turns glossary terms into hover/tap definitions.
+const prose = s => termRe ? esc(s).replace(termRe, (m, t) => `<span class="term" tabindex="0" data-def="${esc(defs[t.toLowerCase()])}">${m}</span>`) : esc(s);
+
+function copy(text, btn) {
+  const done = () => { const old = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => btn.textContent = old, 1200); };
+  if (navigator.clipboard) return navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  fallback(text, done);
+}
+function fallback(text, done) {
+  const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); done();
+}
+
+function stage(v) {
+  return `<div class="stage-head"><span class="chip ${v.label.startsWith('Current') ? '' : 'prop'}">${esc(v.label)}</span><button class="play">▶ Play</button></div>
+    <ol class="flow">${v.flow.map((s, i) => `<li><button class="node ${s.state || ''}${i === 0 ? ' active' : ''}" data-i="${i}">${esc(s.t)}</button></li>`).join('')}</ol>
+    <p class="detail" aria-live="polite">${prose(v.flow[0].d)}</p>
+    <p class="result ${v.ok ? 'ok' : 'bad'}">${v.ok ? '✓' : '✗'} ${prose(v.result)}</p>
+    ${v.ref ? `<p class="ids">${esc(v.ref)}</p>` : ''}`;
+}
+
+function bindStage(box, v) {
+  let timer;
+  const show = i => {
+    box.querySelectorAll('.node').forEach((n, j) => n.classList.toggle('active', j === i));
+    box.querySelector('.detail').innerHTML = prose(v.flow[i].d);
+  };
+  box.querySelectorAll('.node').forEach(n => n.onclick = () => { clearInterval(timer); show(+n.dataset.i); });
+  box.querySelector('.play').onclick = () => {
+    clearInterval(timer); let i = 0; show(i);
+    timer = setInterval(() => { if (++i >= v.flow.length) return clearInterval(timer); show(i); }, 1600);
+  };
+}
+
+// Banner for a question the user already answered: what, who, when, and whether it overrode the pick.
+function decided(q) {
+  if (!q.answer) return '';
+  const o = q.options.find(o => o.key === q.answer.key);
+  const override = q.answer.key !== q.pick.key ? ` Overrode my pick (${esc(q.pick.key)}).` : '';
+  return `<p class="decided"><b>Decided: ${esc(o.key)} · ${esc(o.name)}</b> by ${esc(q.answer.by)}, ${esc(q.answer.date)}.${override}${q.answer.note ? ' ' + prose(q.answer.note) : ''}</p>`;
+}
+
+function renderQ(q, n) {
+  const pickOpt = q.options.find(o => o.key === q.pick.key);
+  const [sureN, sureText] = SURE[q.pick.sure] || SURE.said;
+  const el = document.createElement('section');
+  el.className = 'q'; el.id = 'q' + n;
+  el.innerHTML = `
+    <header><span class="num">${n}</span><div><h2>${esc(q.ask)}</h2>${q.ids ? `<p class="ids">${esc(q.ids)}</p>` : ''}</div></header>
+    ${decided(q)}
+    <div class="pills"><span class="pill"><b>Blocked:</b> ${prose(q.whyNow)}</span><span class="pill"><b>If you don't answer:</b> ${prose(q.ifSilent)}</span></div>
+    <p class="plain">${prose(q.plain)}</p>
+
+    <h3>See it happen <small>· tap a step or press Play</small></h3>
+    <div class="tabs" role="tablist">${q.views.map((v, i) => `<button role="tab" data-v="${i}" aria-selected="${i === 0}">${esc(v.name)}</button>`).join('')}</div>
+    <div class="stage"></div>
+
+    <h3>What each option touches <small>· tap a cell</small></h3>
+    <div class="grid" style="--cols:${q.options.length}">
+      <span></span>${q.options.map(o => `<span class="h">${esc(o.key)} · ${esc(o.name)}${o.key === q.pick.key ? ' ★' : ''}</span>`).join('')}
+      ${AREAS.map(([a, label]) => `<span class="area">${label}</span>` + q.options.map(o => {
+        const r = o.radius[a];
+        return `<button class="cell l${r.level}" data-o="${esc(o.key)}" data-a="${a}">${LEVELS[r.level]}</button>`;
+      }).join('')).join('')}
+    </div>
+    <div class="legend">${LEVELS.map((l, i) => `<span><i style="background:var(--l${i})"></i>${l}</span>`).join('')}</div>
+    <p class="detail cell-detail" aria-live="polite">Tap a cell to see what it means.</p>
+
+    <h3>Check you got it</h3>
+    ${q.quiz.map((z, zi) => `<div class="quiz" data-z="${zi}"><p>${prose(z.q)}</p>${z.choices.map((c, ci) => `<button data-c="${ci}">${prose(c)}</button>`).join('')}<p class="fb" aria-live="polite"></p></div>`).join('')}
+
+    <h3>My pick</h3>
+    <div class="pick"><div class="big">${esc(q.pick.key)}</div><div>
+      <p><b>${esc(pickOpt.name)}.</b> ${prose(q.pick.why)}</p>
+      <p><b>The cost:</b> ${prose(q.pick.drawback)}</p>
+      <p class="sure">${[1, 2, 3].map(i => `<i class="${i <= sureN ? 'on' : ''}"></i>`).join('')} ${sureText}</p>
+      ${q.pick.caveat ? `<p class="caveat"><b>Check first:</b> ${prose(q.pick.caveat)}</p>` : ''}
+    </div></div>
+
+    <h3>Whose call</h3>
+    <div class="owner"><div class="avatar">${esc(q.owner.who[0])}</div><div>
+      <p><b>${esc(q.owner.who)}.</b> ${prose(q.owner.why)}</p>
+      ${q.owner.message ? `<p>Message to send:</p><blockquote>${esc(q.owner.message)}</blockquote><button class="ghost copy-msg">Copy message</button>` : ''}
+      ${q.owner.safeDefault ? `<p style="margin-top:8px"><b>Safe default:</b> ${prose(q.owner.safeDefault)}</p>` : ''}
+    </div></div>
+
+    <div class="choose">${q.options.map(o => `<button data-k="${esc(o.key)}" aria-pressed="false">Choose ${esc(o.key)}</button>`).join('')}
+      ${q.owner.message && q.owner.who !== 'You' ? `<button data-k="ask" aria-pressed="false">Ask ${esc(q.owner.who)} first</button>` : ''}</div>
+    ${q.evidence ? `<details><summary>Evidence</summary><pre>${esc(q.evidence)}</pre></details>` : ''}`;
+
+  const box = el.querySelector('.stage');
+  const tabs = el.querySelectorAll('[role=tab]');
+  const showView = i => { tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i)); box.innerHTML = stage(q.views[i]); bindStage(box, q.views[i]); };
+  tabs.forEach(t => t.onclick = () => showView(+t.dataset.v));
+  showView(0);
+
+  const cd = el.querySelector('.cell-detail');
+  el.querySelectorAll('.cell').forEach(c => c.onclick = () => {
+    el.querySelectorAll('.cell').forEach(x => x.classList.toggle('active', x === c));
+    const o = q.options.find(o => o.key === c.dataset.o);
+    cd.innerHTML = `<b>${esc(o.key)} · ${AREAS.find(a => a[0] === c.dataset.a)[1]}:</b> ${prose(o.radius[c.dataset.a].text)}`;
+  });
+
+  el.querySelectorAll('.quiz').forEach(box => {
+    const z = q.quiz[+box.dataset.z];
+    box.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const right = +b.dataset.c === z.answer;
+      box.querySelectorAll('button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(right ? 'right' : 'wrong');
+      box.querySelector('.fb').innerHTML = (right ? 'Right. ' : 'Not quite. ') + prose(z.explain);
+    });
+  });
+
+  const cm = el.querySelector('.copy-msg');
+  if (cm) cm.onclick = () => copy(q.owner.message, cm);
+
+  if (q.answer) {
+    answers[n] = `${n}${q.answer.key} (decided)`;
+    el.querySelector(`.choose button[data-k="${q.answer.key}"]`)?.setAttribute('aria-pressed', 'true');
+    queueMicrotask(() => document.querySelector(`.dots a[href="#q${n}"]`).classList.add('done'));
+  }
+  el.querySelectorAll('.choose button').forEach(b => b.onclick = () => {
+    el.querySelectorAll('.choose button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    answers[n] = b.dataset.k === 'ask' ? `${n}: asking ${q.owner.who} first` : `${n}${b.dataset.k}`;
+    document.querySelector(`.dots a[href="#q${n}"]`).classList.add('done');
+    updateReply();
+  });
+  return el;
+}
+
+function updateReply() {
+  const r = Object.keys(answers).sort((a, b) => a - b).map(k => answers[k]).join(', ');
+  document.getElementById('reply').textContent = r || 'pick an option below';
+}
+
+const app = document.getElementById('app');
+document.title = D.title;
+app.innerHTML = `<h1>${esc(D.title)}</h1>
+  <p class="recap"><b>Goal:</b> ${prose(D.goal)}${(D.decided || []).length ? ` <b>Already decided:</b> ${D.decided.map(prose).join(' ')}` : ''}</p>
+  <nav class="dots">${D.questions.map((_, i) => `<a href="#q${i + 1}">${i + 1}</a>`).join('')}</nav>`;
+D.questions.forEach((q, i) => app.append(renderQ(q, i + 1)));
+updateReply();
+document.getElementById('copyReply').onclick = e => copy(document.getElementById('reply').textContent, e.target);
+</script>
+</body>
+</html>
