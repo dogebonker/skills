@@ -102,3 +102,5 @@ Confidence:
 - `low`: WEAK. Its steps say what evidence would confirm it.
 
 Null Object has no gof-patterns file, so its target line names the catalog entry.
+
+Evals: `evals/score.py` scores a report from a run over `evals/fixtures/` or `evals/round2/` against that round's key; `evals/README.md` says how to run one blind.
