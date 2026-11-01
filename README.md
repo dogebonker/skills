@@ -11,6 +11,7 @@ Agent skills I use daily with Claude Code and Codex. Each one is a folder with a
 | [feature-pipeline](skills/feature-pipeline/SKILL.md) | Takes a large feature through interview and docs, two architect/critic rounds, tests written against the plan, and then implementation slices that each verify before the next one starts. | A new project or a multi-module feature. Not for small fixes. |
 | [brief](skills/brief/SKILL.md) | Cuts a long thread down to status, what needs your decision, and the next step. | The reply was a wall of text, or a long multi-agent run just finished. |
 | [show-me](skills/show-me/SKILL.md) | Explains the current topic with a diagram, a sketch of the code's shape, or a small HTML page. | Text alone isn't landing. |
+| [explain](skills/explain/SKILL.md) | Explains how project code works one layer at a time, starting from the problem it solves and going down to `file:line`, deeper or simpler on request. | You're onboarding to a subsystem, or "how does X work?" |
 
 ## Install
 
