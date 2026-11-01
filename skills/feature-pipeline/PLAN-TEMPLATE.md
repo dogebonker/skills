@@ -33,7 +33,7 @@ decisions deferred to a later phase.>
 ### Phase 1 — <short imperative title>
 
 - **Goal:** <the one capability this phase delivers; a user/caller-visible outcome where possible.>
-- **Depends on:** <none | Phase N>
+- **Depends on:** <none | Phase N> 
 - **Touches:** <files / modules created or changed — be specific, e.g. `src/money/parse.go`.>
 - **Tests (the spec):** <the behaviours that prove this phase, by public interface — written first
   in Phase 3 and red until this phase is implemented. e.g. "parses `1 234,50` → 123450 minor units".>

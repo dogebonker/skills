@@ -5,13 +5,14 @@ Fails on missing fields, bad references and text over its word limit.
 Exits 1 and lists every problem, or prints "ok".
 """
 import json
+import os
 import re
 import sys
 
 LIMITS = {
-    'goal': 25, 'ask': 15, 'whyNow': 15, 'ifSilent': 15, 'plain': 30, 'name': 6, 'result': 15,
+    'goal': 25, 'problem': 25, 'ask': 15, 'whyNow': 15, 'ifSilent': 15, 'plain': 30, 'name': 6, 'result': 15,
     't': 5, 'd': 25, 'text': 15, 'q': 20, 'explain': 25, 'why': 25, 'drawback': 15,
-    'caveat': 40, 'message': 50, 'safeDefault': 20, 'note': 25,
+    'caveat': 40, 'message': 50, 'safeDefault': 20, 'note': 25, 'alt': 30,
 }
 AREAS = ('code', 'data', 'people', 'users', 'undo', 'cost')
 VIEW_LABELS = ('Current — observed', 'Current — not verified', 'Proposed', 'Illustrative')
@@ -32,11 +33,16 @@ def check_limits(node, path, problems):
             check_limits(v, f'{path}[{i}]', problems)
 
 
-def check(data):
+def check(data, base=None):
     p = []
-    for k in ('title', 'goal', 'questions'):
+    for k in ('title', 'problem', 'goal', 'questions'):
         if not data.get(k):
             p.append(f'missing {k}')
+    ov = data.get('overview') or {}
+    if not ov.get('src') or not ov.get('alt'):
+        p.append('overview needs src and alt (the zoomed-out picture)')
+    elif base and not os.path.isfile(os.path.join(base, ov['src'])):
+        p.append(f'overview: {ov["src"]} not found next to the page')
     for term, d in (data.get('terms') or {}).items():
         if words(d) > 15:
             p.append(f'terms.{term}: {words(d)} words, limit 15')
@@ -77,6 +83,16 @@ def check(data):
             p.append(f'{at}: answer needs key (an option), by, and date as YYYY-MM-DD')
         if not (q.get('owner') or {}).get('who'):
             p.append(f'{at}: owner.who is required (use "You" when the call is yours)')
+        pics = q.get('pictures') or []
+        if not pics:
+            kind = 'a frame-by-frame storyboard' if q.get('ui') else 'a strip'
+            p.append(f'{at}: needs pictures[] ({kind} PNG)')
+        for i, pic in enumerate(pics):
+            src = pic.get('src') or ''
+            if not src or not pic.get('alt'):
+                p.append(f'{at}.pictures[{i}]: needs src and alt')
+            elif base and not os.path.isfile(os.path.join(base, src)):
+                p.append(f'{at}.pictures[{i}]: {src} not found next to the page')
     return p
 
 
@@ -92,7 +108,7 @@ def load(path):
 
 
 def main(path):
-    problems = check(load(path))
+    problems = check(load(path), os.path.dirname(os.path.abspath(path)))
     print('\n'.join(problems) or 'ok')
     sys.exit(1 if problems else 0)
 

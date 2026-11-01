@@ -30,6 +30,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .decided { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--l0); border: 1px solid var(--ok); }
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
 .pill { background: var(--soft); border-radius: 99px; padding: 4px 12px; font-size: 14px; }
+.pic { margin: 16px 0 0; }
+.problem { font-size: 1.15rem; line-height: 1.5; margin: 14px 0 0; }
+.more { border-top: 1px solid var(--line); padding-top: 4px; } .more > summary { font-weight: 600; color: var(--ink); padding: 8px 0; }
+.pic img { display: block; max-width: 100%; height: auto; border: 1px solid var(--soft); border-radius: 10px; }
+.pic figcaption { margin-top: 6px; font-size: .9rem; opacity: .8; }
 .plain { font-size: 1.15rem; line-height: 1.5; margin: 18px 0 0; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--soft); border-radius: 0 10px 10px 0; }
 .term { border-bottom: 1.5px dotted var(--accent); position: relative; cursor: help; outline: none; }
 .term:hover::after, .term:focus::after { content: attr(data-def); position: absolute; left: 0; top: 1.6em; z-index: 5; width: max-content; max-width: 260px; background: var(--ink); color: var(--panel); font-size: 13px; line-height: 1.4; padding: 6px 10px; border-radius: 8px; font-weight: 400; }
@@ -85,6 +90,11 @@ pre { overflow-x: auto; background: var(--soft); padding: 10px; border-radius: 8
 <script id="data" type="application/json">
 {
   "title": "Billing cleanup",
+  "problem": "Customers sometimes see one total on the invoice page and a different total on the PDF of the same invoice.",
+  "overview": {
+    "src": "img/00-overview.png",
+    "alt": "Four boxes: an invoice is saved, a line is edited, the saved total is not updated, and the page and PDF disagree."
+  },
   "goal": "Invoices show the same total everywhere: on the page, in the PDF and in reports.",
   "decided": [
     "Totals stay in the account's currency.",
@@ -102,6 +112,12 @@ pre { overflow-x: auto; background: var(--soft); padding: 10px; border-radius: 8
       "ids": "BILL-142 · PR #318 · billing/models.py",
       "whyNow": "The cleanup PR can't merge, because its migration depends on this.",
       "ifSilent": "The PR waits, and totals keep drifting.",
+      "pictures": [
+        {
+          "src": "img/01-totals.png",
+          "alt": "Today the page and PDF show different totals. With option A both add up the lines and agree."
+        }
+      ],
       "plain": "An invoice total is the sum of its lines. We can save the total, or add it up whenever someone opens the invoice.",
       "views": [
         {
@@ -346,8 +362,30 @@ function renderQ(q, n) {
     <header><span class="num">${n}</span><div><h2>${esc(q.ask)}</h2>${q.ids ? `<p class="ids">${esc(q.ids)}</p>` : ''}</div></header>
     ${decided(q)}
     <div class="pills"><span class="pill"><b>Blocked:</b> ${prose(q.whyNow)}</span><span class="pill"><b>If you don't answer:</b> ${prose(q.ifSilent)}</span></div>
+    ${(q.pictures || []).map(p => `<figure class="pic"><img src="${esc(p.src)}" alt="${esc(p.alt)}"><figcaption>${prose(p.alt)}</figcaption></figure>`).join('')}
     <p class="plain">${prose(q.plain)}</p>
 
+    <h3>My pick</h3>
+    <div class="pick"><div class="big">${esc(q.pick.key)}</div><div>
+      <p><b>${esc(pickOpt.name)}.</b> ${prose(q.pick.why)}</p>
+      <p><b>The cost:</b> ${prose(q.pick.drawback)}</p>
+      <p class="sure">${[1, 2, 3].map(i => `<i class="${i <= sureN ? 'on' : ''}"></i>`).join('')} ${sureText}</p>
+      ${q.pick.caveat ? `<p class="caveat"><b>Check first:</b> ${prose(q.pick.caveat)}</p>` : ''}
+    </div></div>
+
+    <h3>Check you got it</h3>
+    ${q.quiz.map((z, zi) => `<div class="quiz" data-z="${zi}"><p>${prose(z.q)}</p>${z.choices.map((c, ci) => `<button data-c="${ci}">${prose(c)}</button>`).join('')}<p class="fb" aria-live="polite"></p></div>`).join('')}
+
+    <h3>Whose call</h3>
+    <div class="owner"><div class="avatar">${esc(q.owner.who[0])}</div><div>
+      <p><b>${esc(q.owner.who)}.</b> ${prose(q.owner.why)}</p>
+      ${q.owner.message ? `<p>Message to send:</p><blockquote>${esc(q.owner.message)}</blockquote><button class="ghost copy-msg">Copy message</button>` : ''}
+      ${q.owner.safeDefault ? `<p style="margin-top:8px"><b>Safe default:</b> ${prose(q.owner.safeDefault)}</p>` : ''}
+    </div></div>
+
+    <div class="choose">${q.options.map(o => `<button data-k="${esc(o.key)}" aria-pressed="false">Choose ${esc(o.key)}</button>`).join('')}
+      ${q.owner.message && q.owner.who !== 'You' ? `<button data-k="ask" aria-pressed="false">Ask ${esc(q.owner.who)} first</button>` : ''}</div>
+    <details class="more"><summary>More detail: step by step, what each option touches, evidence</summary>
     <h3>See it happen <small>· tap a step or press Play</small></h3>
     <div class="tabs" role="tablist">${q.views.map((v, i) => `<button role="tab" data-v="${i}" aria-selected="${i === 0}">${esc(v.name)}</button>`).join('')}</div>
     <div class="stage"></div>
@@ -363,27 +401,7 @@ function renderQ(q, n) {
     <div class="legend">${LEVELS.map((l, i) => `<span><i style="background:var(--l${i})"></i>${l}</span>`).join('')}</div>
     <p class="detail cell-detail" aria-live="polite">Tap a cell to see what it means.</p>
 
-    <h3>Check you got it</h3>
-    ${q.quiz.map((z, zi) => `<div class="quiz" data-z="${zi}"><p>${prose(z.q)}</p>${z.choices.map((c, ci) => `<button data-c="${ci}">${prose(c)}</button>`).join('')}<p class="fb" aria-live="polite"></p></div>`).join('')}
-
-    <h3>My pick</h3>
-    <div class="pick"><div class="big">${esc(q.pick.key)}</div><div>
-      <p><b>${esc(pickOpt.name)}.</b> ${prose(q.pick.why)}</p>
-      <p><b>The cost:</b> ${prose(q.pick.drawback)}</p>
-      <p class="sure">${[1, 2, 3].map(i => `<i class="${i <= sureN ? 'on' : ''}"></i>`).join('')} ${sureText}</p>
-      ${q.pick.caveat ? `<p class="caveat"><b>Check first:</b> ${prose(q.pick.caveat)}</p>` : ''}
-    </div></div>
-
-    <h3>Whose call</h3>
-    <div class="owner"><div class="avatar">${esc(q.owner.who[0])}</div><div>
-      <p><b>${esc(q.owner.who)}.</b> ${prose(q.owner.why)}</p>
-      ${q.owner.message ? `<p>Message to send:</p><blockquote>${esc(q.owner.message)}</blockquote><button class="ghost copy-msg">Copy message</button>` : ''}
-      ${q.owner.safeDefault ? `<p style="margin-top:8px"><b>Safe default:</b> ${prose(q.owner.safeDefault)}</p>` : ''}
-    </div></div>
-
-    <div class="choose">${q.options.map(o => `<button data-k="${esc(o.key)}" aria-pressed="false">Choose ${esc(o.key)}</button>`).join('')}
-      ${q.owner.message && q.owner.who !== 'You' ? `<button data-k="ask" aria-pressed="false">Ask ${esc(q.owner.who)} first</button>` : ''}</div>
-    ${q.evidence ? `<details><summary>Evidence</summary><pre>${esc(q.evidence)}</pre></details>` : ''}`;
+    ${q.evidence ? `<h3>Evidence</h3><pre>${esc(q.evidence)}</pre>` : ''}</details>`;
 
   const box = el.querySelector('.stage');
   const tabs = el.querySelectorAll('[role=tab]');
@@ -433,6 +451,8 @@ function updateReply() {
 const app = document.getElementById('app');
 document.title = D.title;
 app.innerHTML = `<h1>${esc(D.title)}</h1>
+  ${D.problem ? `<p class="problem">${prose(D.problem)}</p>` : ''}
+  ${D.overview ? `<figure class="pic"><img src="${esc(D.overview.src)}" alt="${esc(D.overview.alt)}"><figcaption>${prose(D.overview.alt)}</figcaption></figure>` : ''}
   <p class="recap"><b>Goal:</b> ${prose(D.goal)}${(D.decided || []).length ? ` <b>Already decided:</b> ${D.decided.map(prose).join(' ')}` : ''}</p>
   <nav class="dots">${D.questions.map((_, i) => `<a href="#q${i + 1}">${i + 1}</a>`).join('')}</nav>`;
 D.questions.forEach((q, i) => app.append(renderQ(q, i + 1)));

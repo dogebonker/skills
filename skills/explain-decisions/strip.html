@@ -1,0 +1,24 @@
+<html><head><meta charset="utf-8"><style>
+body{font:15px -apple-system,Helvetica;background:#fff;margin:24px;color:#1f2430;width:1232px}
+h1{font-size:20px;margin:0 0 6px}h2{font-size:16px;margin:22px 0 4px}.note{color:#5a6577;margin:0 0 10px}
+.row{display:flex;gap:10px;align-items:stretch}.arrow{align-self:center;font-size:24px;color:#9aa5b5}
+.b{flex:1;border:2px solid #cfd5df;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.t{font-weight:700}.d{font-size:13px;line-height:1.4;color:#3b4556}.v{font:600 13px ui-monospace,Menlo;background:#f4f6f9;border-radius:6px;padding:6px 8px}
+.cap{font-weight:600;font-size:13px;margin-top:auto}
+.bad{border-color:#dc2626}.bad .cap{color:#b91c1c}.good{border-color:#16a34a}.good .cap{color:#15803d}.new{border-style:dashed;border-color:#2f5bd3}
+</style></head><body>
+<h1>Invoice totals: where the number comes from</h1>
+<h2>Today</h2><p class="note">The page and the PDF read the total from different places.</p>
+<div class="row">
+<div class="b"><div class="t">Invoice saved</div><div class="v">3 lines → 1,250.00</div><div class="cap">Total saved as a copy</div></div><div class="arrow">→</div>
+<div class="b"><div class="t">CSV import edits a line</div><div class="v">qty 2 → 3</div><div class="cap">Line changes</div></div><div class="arrow">→</div>
+<div class="b bad"><div class="t">Saved copy not updated</div><div class="v">still 1,250.00</div><div class="cap">Copy is now wrong</div></div><div class="arrow">→</div>
+<div class="b bad"><div class="t">Two totals</div><div class="v">page 1,310.00 · PDF 1,250.00</div><div class="cap">Customer sees two numbers</div></div>
+</div>
+<h2>A · Stop saving, always add up</h2><p class="note">No copy to forget, so every place agrees.</p>
+<div class="row">
+<div class="b"><div class="t">CSV import edits a line</div><div class="v">qty 2 → 3</div><div class="cap">Same edit as today</div></div><div class="arrow">→</div>
+<div class="b new"><div class="t">Nothing else saved</div><div class="v">no total column</div><div class="cap">Nothing to fall out of date</div></div><div class="arrow">→</div>
+<div class="b good"><div class="t">Same total everywhere</div><div class="v">page, PDF, reports: 1,310.00</div><div class="cap">One number</div></div>
+</div>
+</body></html>
