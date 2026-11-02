@@ -40,3 +40,12 @@ Check each candidate against every flag. A hit counts against the candidate unle
 - **Unvalidated output**: model output crossing a boundary without schema validation. [references/ai-systems.md]
 - **Trusted untrusted input**: retrieved or user content can steer a model that holds write tools or irreversible actions without human approval. [references/ai-systems.md]
 - **No eval before build**: the LLM part has no offline test set and quality bar defined ahead of implementation. [references/ai-systems.md]
+
+## Migration (brownfield only)
+
+- **Big-bang rewrite**: the target goes live in one cutover, with no step that ships on its own. [working-effectively-with-legacy-code]
+- **Target without pain**: the change removes no pain that has evidence. [working-effectively-with-legacy-code]
+- **Step without rollback**: a migration step that cannot be undone, or has no observable done signal. [release-it]
+- **Migration dual write**: application code writes both the old and the new store while data moves. [designing-data-intensive-applications]
+- **Unprotected seam**: a step moves a seam that has no characterization tests. [working-effectively-with-legacy-code]
+- **Endless strangler**: two live paths with no end date. [working-effectively-with-legacy-code]

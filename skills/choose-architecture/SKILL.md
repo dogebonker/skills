@@ -1,11 +1,11 @@
 ---
 name: choose-architecture
-description: "Choose the system architecture for a new project or a new service before any code: boundaries, data and consistency, sync vs async, failure handling, service interfaces, LLM components, and the language and framework per service, each decision backed by a cited book rule. Use for 'new project', 'new service' or 'new microservice', 'what architecture should we use', 'monolith or microservices', 'how should we structure this system'. Greenfield only: an existing system enters as fixed contracts."
+description: "Choose the system architecture for a new project or a new service before any code: boundaries, data and consistency, sync vs async, failure handling, service interfaces, LLM components, and the language and framework per service, each decision backed by a cited book rule. Use for 'new project', 'new service' or 'new microservice', 'what architecture should we use', 'monolith or microservices', 'how should we structure this system'. Also for changing the shape of a running system: splitting a monolith, extracting a service, replacing a store or queue."
 ---
 
 # Choose Architecture
 
-Pick the system-level shape of a new project or a new service. Every choice traces to a stated **force** (a requirement or constraint) and to one rule from the book that owns that kind of decision. Code-level design (patterns, refactoring, class shapes) belongs to `use-patterns` and `architect`, after this skill finishes.
+Pick the system-level shape of a new project or a new service, or the target shape and migration path for a running system. Every choice traces to a stated **force** (a requirement or constraint) and to one rule from the book that owns that kind of decision. Code-level design (patterns, refactoring, class shapes) belongs to `use-patterns`, `improve-codebase-architecture` and `architect`, after this skill finishes.
 
 Book rule files live at `~/.agents/skills/<book>/<book>.mini.md`. Load the full `<book>.md` beside it only when the mini rules leave a tradeoff open.
 
@@ -22,15 +22,20 @@ Each kind of decision has one owning file. The owner decides. A decision that al
 | Dependency direction inside each deployable, frameworks at the edge | `clean-architecture` |
 | Interface depth at each seam between deployables and modules | `a-philosophy-of-software-design`, using the vocabulary in `~/.claude/skills/codebase-design/SKILL.md` (depth, seam, leverage, locality) for the analysis. Client-facing text keeps the client's words, such as "service" and "API" |
 | LLM components | [references/ai-systems.md](references/ai-systems.md) |
+| Migration path in a running system: step order, seams, characterization tests, rollback | `working-effectively-with-legacy-code`, with `designing-data-intensive-applications` advisory for data moves |
 | Language, runtime, framework and tooling per deployable | [references/stack.md](references/stack.md), house rules |
 
 ## Steps
 
 ### 1. Scope
 
-Confirm the work is a new project, or a new service joining an existing system. For a new service, list the existing system's contracts it must honour (APIs, events, shared stores, auth) as fixed inputs. This skill takes them as given and leaves the existing system's internals alone.
+Name the kind of work:
 
-Done when: the scope is one sentence and every fixed contract is listed, or the user confirms there are none.
+- **New project**: nothing exists yet.
+- **New service** joining an existing system: list the existing system's contracts it must honour (APIs, events, shared stores, auth) as fixed inputs, and leave that system's internals alone.
+- **Brownfield change** to the shape of a running system: read [references/brownfield.md](references/brownfield.md) now. It adds steps B1 to B3 and changes steps 2, 3, 5 and 6.
+
+Done when: the scope is one sentence naming its kind, and every fixed contract is listed, or the user confirms there are none.
 
 ### 2. Forces
 
