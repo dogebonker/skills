@@ -12,5 +12,6 @@ The owner's own defaults for language, runtime, framework and tooling per deploy
 
 ## When a rule meets a force
 
-- A house rule is the default. When the Team force says nobody on the team runs that stack and the Time force leaves no room to learn it, record both views and the force that settles it, the same way as an advisory disagreement.
+- When the brief does not say which stack the team runs, ask before applying a house rule. Until the user answers, the choice is a written assumption, and the open question names the house rule and its alternative.
+- A house rule applies only when the team can run it within the Time force. When the Team force says nobody on the team runs that stack and the Time force leaves no room to learn it, record both views and the force that settles it, the same way as an advisory disagreement.
 - A deployable no rule covers: pick by the Team force (what the team already runs in production) and label the choice "not a house rule".

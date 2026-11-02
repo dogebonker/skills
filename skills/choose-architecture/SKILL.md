@@ -101,10 +101,12 @@ List the decision kinds in play, then read each owner's mini file before decidin
 - any advisory disagreement, and the force that settles it
 - **revisit when**: the observable change in a force that would reopen the decision
 
-Done when: every decision kind in play has a record, and every choice names a force and quotes a rule.
+A choice that rests on a behavior step 4 marked unverified is not the recommendation yet. Recommend the verified fallback, and make the first open question a short trial: what to test, how long it takes, and the result that switches the choice.
+
+Done when: every decision kind in play has a record, every choice names a force and quotes a rule, and no recommended choice rests on an unverified behavior.
 
 ### 9. Deliver
 
-Ask the user which format they want: a chat summary, ADRs (one per significant decision in `docs/adr/` plus a one-page overview linking them), or an HTML page via `archify`. Write that format. Lead with the recommendation and the open questions. Put the capacity arithmetic in the main text when it decides the stack or the deployable count. Keep the main text around 1,200 words for a chat summary. The appendix or ADR files hold only what the main text leaves out: the forces table, the red-flag screen, seam ratings, and the record fields the main text skips. Each decision, candidate and question appears once.
+Ask the user which format they want: a chat summary, ADRs (one per significant decision in `docs/adr/` plus a one-page overview linking them), or an HTML page via `archify`. Write that format. Lead with the recommendation and the open questions. Put the capacity arithmetic in the main text when it decides the stack or the deployable count. Keep the main text around 1,400 words for a chat summary. In the main text each decision is one line under its D code: the choice and the force that decided it. The appendix holds the rest of each record under the same D code (options, quoted rule, advisory view, revisit when), plus the forces table, the red-flag screen and the seam ratings. Each candidate and each question appears once.
 
-Done when: the chosen format exists and contains every record from step 8, the classification, the rejected candidates with why they lost, and the step 4 gotchas, the main text reads on its own without the appendix, and nothing in the appendix restates the main text.
+Done when: the chosen format exists and contains every record from step 8, the classification, the rejected candidates with why they lost, and the step 4 gotchas, the main text reads on its own without the appendix, and no decision line, candidate or question appears in both parts.
