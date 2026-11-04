@@ -1,0 +1,4 @@
+interface:
+  display_name: "Approach Review"
+  short_description: "Test contracts, coordination and enforcement ownership"
+  default_prompt: "Use $approach-review to test this change's guarantees against actual state writers, competing operations and enforcement boundaries."
