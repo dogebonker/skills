@@ -96,7 +96,7 @@ function img(shot, caption) {
 function status(t) {
   if (t.status !== 'approved') return `<span class="st">${t.status === 'rejected' ? 'Rejected' : 'Proposed'}</span>`;
   const r = last?.results?.[t.id];
-  if (!r) return '<span class="st">Not judged</span>';
+  if (!r) return '<span class="st">Not checked</span>';
   return `<span class="st ${r.pass ? 'pass' : 'fail'}">${r.pass ? 'Pass' : 'Fail'}</span>`;
 }
 
@@ -105,14 +105,14 @@ function draw() {
   let html = `<h1>${esc(D.title)}</h1><p class="muted">${esc(D.goal)}. Ours: <b>${esc(D.target.app)}</b> at ${esc(D.target.url)}.</p>
     <div class="chips">${D.kit.map(k => `<span>Kit: ${esc(k)}</span>`).join('')}${(D.taste || []).map(t => `<span>Taste: ${esc(t)}</span>`).join('')}</div>
     <h2>Climb</h2>${rounds.length ? `<div class="climb" aria-label="Approved spec items passing per round">${rounds.map(r => `<div><span>${passed(r)}/${approved.length}</span><i style="height:${Math.round(passed(r) / max * 80)}px"></i><span>Round ${Number(r.n) || ''}</span>${r.offKit ? `<span class="off">${Number(r.offKit)} off-kit</span>` : ''}</div>`).join('')}</div>` : `<p class="muted">${D.spec.some(t => t.status === 'proposed') ? 'No rounds yet: the spec is waiting for your keep or reject.' : 'No rounds yet: the spec is approved and the climb has not started.'}</p>`}
-    <p><button aria-pressed="${mono}" id="mono">Grayscale, as the judge sees it</button></p>`;
+    <p><button aria-pressed="${mono}" id="mono">Grayscale structure view</button></p>`;
   for (const g of D.regions) {
     const ref = g.refs.find(r => r.app === g.picked) || g.refs[0];
     const others = g.refs.filter(r => r !== ref);
     html += `<section class="region"><h3>${esc(g.id)}. ${esc(g.name)}</h3>
       <div class="shots">${img(ref, `Reference: ${ref.app}${ref.marketing ? ' (store marketing, staged)' : ''}`)}${img(g.ours, 'Ours, before')}${last ? img(last.shots?.[g.id], `Ours, round ${last.n}`) : ''}</div>
       ${others.length ? `<div class="shots">${others.map(r => img(r, `Also considered: ${r.app}`)).join('')}</div>` : ''}
-      <table><thead><tr><th>Item</th><th>From</th><th>Status</th><th>Judge</th></tr></thead><tbody>
+      <table><thead><tr><th>Item</th><th>From</th><th>Status</th><th>Evidence</th></tr></thead><tbody>
       ${D.spec.filter(t => t.region === g.id).map(t => `<tr class="${t.status === 'rejected' ? 'rejected' : ''}"><td><b>${esc(t.id)}</b> ${esc(t.item)}${t.reason ? `<br><span class="muted">${esc(t.reason)}</span>` : ''}</td><td>${esc(t.from)}</td><td>${status(t)}</td><td>${esc(last?.results?.[t.id]?.why || '')}</td></tr>`).join('')}
       </tbody></table></section>`;
   }
