@@ -1,0 +1,260 @@
+[
+  {
+    "file": "apps/server/src/scheduledTasks/ScheduledTaskService.interval.test.ts",
+    "title": "persists elapsed interval $zone from $from",
+    "source": "#23991",
+    "reason": "Interval schedules advance by elapsed time across DST (NY spring-forward, fall-back twice, UTC and Tokyo controls). Sole check, from fix #15768."
+  },
+  {
+    "file": "apps/server/src/scheduledTasks/ScheduledTaskService.interval.test.ts",
+    "title": "keeps fixed-time schedules on the local calendar from $from",
+    "source": "#23991",
+    "reason": "Fixed-time schedules stay on the local calendar across DST. Sole check."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "disables shared edits when any member lacks project access",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "renames every member when all have project access without settings access",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "stops before the next member if its grant is revoked during an earlier update",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "disables removal for a checkout whose project grant is missing",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "removes a writable checkout while removal of the mixed group stays denied",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "rechecks every removal target after confirmation before deleting or clearing drafts",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "does not save an edit whose grant was revoked mid-edit, and recovers when restored",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "uses the current grant while a member's session is %s",
+    "source": "#24011",
+    "reason": "Project permission recheck on revoked access. Surviving logic test covers only removal planning copy."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "offers every environment while no project is selected",
+    "source": "#24011",
+    "reason": "Project settings scope and environment link recovery, no other test covers the panel."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "offers only the selected project's checkout environments",
+    "source": "#24011",
+    "reason": "Project settings scope and environment link recovery, no other test covers the panel."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "keeps an unknown project recoverable from any environment",
+    "source": "#24011",
+    "reason": "Project settings scope and environment link recovery, no other test covers the panel."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "recovers a stale environment link with checkout %s",
+    "source": "#24011",
+    "reason": "Project settings scope and environment link recovery, no other test covers the panel."
+  },
+  {
+    "file": "apps/web/src/components/settings/ProjectSettingsPanel.browser.test.tsx",
+    "title": "returns to the project overview after removal, clearing the selection but keeping the environment",
+    "source": "#24011",
+    "reason": "Post-removal navigation, sole coverage."
+  },
+  {
+    "file": "apps/mobile/src/lib/copyTextWithHaptic.test.ts",
+    "title": "triggers haptic feedback without waiting for the clipboard promise",
+    "source": "#23980",
+    "reason": "COLLATERAL restored verbatim with the redaction test in #23980, not individually justified. Restored with the redaction test. Cut by second-pass #22588 as log or copy wording."
+  },
+  {
+    "file": "apps/mobile/src/lib/copyTextWithHaptic.test.ts",
+    "title": "preserves selection feedback for thread work rows",
+    "source": "#23980",
+    "reason": "COLLATERAL restored verbatim with the redaction test in #23980, not individually justified. Restored with the redaction test. Cut by second-pass #22588 as log or copy wording."
+  },
+  {
+    "file": "apps/mobile/src/lib/copyTextWithHaptic.test.ts",
+    "title": "reports whether the clipboard write succeeded",
+    "source": "#23980",
+    "reason": "COLLATERAL restored verbatim with the redaction test in #23980, not individually justified. Restored with the redaction test. Cut by second-pass #22588 as log or copy wording."
+  },
+  {
+    "file": "apps/mobile/src/lib/copyTextWithHaptic.test.ts",
+    "title": "returns false when the clipboard write fails",
+    "source": "#23980",
+    "reason": "COLLATERAL restored verbatim with the redaction test in #23980, not individually justified. Restored with the redaction test. Cut by second-pass #22588 as log or copy wording."
+  },
+  {
+    "file": "apps/mobile/src/lib/copyTextWithHaptic.test.ts",
+    "title": "reports structured failures without including clipboard contents",
+    "source": "#23980",
+    "reason": "Only test proving clipboard failure logs never contain the copied secret (OAuth state, sign-in links)."
+  },
+  {
+    "file": "packages/client-runtime/src/device/renderScheduler.test.ts",
+    "title": "coalesces frame and pointer invalidations, then stops scheduling when idle or disposed",
+    "source": "#23977",
+    "reason": "Only direct test of createRenderScheduler (coalescing, cancel once, no render after dispose)."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "expires a connected session at its credential deadline",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. session credential expiry on the Effect clock."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "verifies session tokens against the Effect clock",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. session token expiry on the Effect clock."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "rejects websocket tokens once the parent session has expired",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. websocket credential expiry."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "includes expiry context when session and websocket tokens expire",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. session and websocket credential expiry."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "invalidates old dev credentials and tickets after rotation or removal",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. credential rotation."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "invalidates every connection for a session on %s and leaves other sessions active",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. revocation reaches every connection."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "keeps recorded scopes unchanged for both token versions",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. scope narrowing and token versions."
+  },
+  {
+    "file": "apps/server/src/auth/SessionStore.test.ts",
+    "title": "carries a runtime-mode ceiling only on sessions issued with one",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. scope ceiling."
+  },
+  {
+    "file": "apps/server/src/auth/PairingGrantStore.test.ts",
+    "title": "seeds the desktop bootstrap credential as a reusable grant",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap credential."
+  },
+  {
+    "file": "apps/server/src/auth/PairingGrantStore.test.ts",
+    "title": "reports seeded desktop bootstrap credentials as expired after their ttl",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap expiry."
+  },
+  {
+    "file": "apps/server/src/auth/PairingGrantStore.test.ts",
+    "title": "accepts rotating desktop bootstrap tokens derived from the desktop secret",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap rotation."
+  },
+  {
+    "file": "apps/desktop/src/backend/DesktopLocalEnvironmentAuth.test.ts",
+    "title": "exchanges the desktop bootstrap credential only once",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap single use."
+  },
+  {
+    "file": "apps/desktop/src/backend/DesktopLocalEnvironmentAuth.test.ts",
+    "title": "exchanges the current window's token when the backend was launched with a secret",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap rotation."
+  },
+  {
+    "file": "apps/desktop/src/backend/DesktopLocalEnvironmentAuth.test.ts",
+    "title": "does not retry a rejected bootstrap credential",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. desktop bootstrap rejection."
+  },
+  {
+    "file": "apps/server/src/mcp/McpSessionRegistry.test.ts",
+    "title": "expires credentials once their session stops showing signs of life",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. MCP credential liveness."
+  },
+  {
+    "file": "apps/server/src/mcp/McpSessionRegistry.test.ts",
+    "title": "does not keep credentials of other threads alive",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. MCP thread isolation."
+  },
+  {
+    "file": "apps/server/src/mcp/McpSessionRegistry.test.ts",
+    "title": "only a trusted touch restores an expired token with its original scope",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. MCP credential restore scope."
+  },
+  {
+    "file": "apps/server/src/mcp/McpSessionRegistry.test.ts",
+    "title": "never restores an expired token after %s revocation",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. MCP revocation vs expiry."
+  },
+  {
+    "file": "apps/server/src/auth/RpcAuthorization.test.ts",
+    "title": "declares exactly one scope for every RPC in the server group",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. one-scope-per-RPC guard."
+  },
+  {
+    "file": "apps/server/src/mcp/toolkits/core.test.ts",
+    "title": "a client caller targets any thread within its ceiling and cannot act as a thread",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. scope narrowing for MCP callers."
+  },
+  {
+    "file": "apps/server/src/mcp/toolkits/core.test.ts",
+    "title": "a read-only client reads threads and is refused every write before it runs",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. scope narrowing for MCP callers."
+  },
+  {
+    "file": "apps/server/src/mcp/toolkits/core.test.ts",
+    "title": "a caller cannot rewrite a scheduled task that runs above its own modes",
+    "source": "#22557",
+    "reason": "UNVERIFIED candidate for the 22 auth tests restored during review of #22557. Exact titles are not published. Survives in the merged tree and matches the described class. scope narrowing, privilege ceiling."
+  }
+]

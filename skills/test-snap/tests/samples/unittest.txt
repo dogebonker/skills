@@ -1,0 +1,35 @@
+EFE.sx
+======================================================================
+ERROR: test_a (unittest.loader._FailedTest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_a
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/unittest/loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/usr/lib/python3.10/unittest/loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "/tmp/utsample/test_a.py", line 2, in <module>
+    import missing_mod_x
+ModuleNotFoundError: No module named 'missing_mod_x'
+
+
+======================================================================
+ERROR: test_err (test_b.T)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/utsample/test_b.py", line 5, in test_err
+    def test_err(self): raise RuntimeError("x")
+RuntimeError: x
+
+======================================================================
+FAIL: test_bad (test_b.T)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/utsample/test_b.py", line 4, in test_bad
+    def test_bad(self): self.assertEqual(1, 2)
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+FAILED (failures=1, errors=2, skipped=1, expected failures=1)

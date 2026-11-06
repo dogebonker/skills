@@ -1,0 +1,13 @@
+=== RUN   TestPass
+--- PASS: TestPass (0.00s)
+=== RUN   TestFail
+=== RUN   TestFail/sub_one
+    a_test.go:4: boom
+--- FAIL: TestFail (0.00s)
+    --- FAIL: TestFail/sub_one (0.00s)
+=== RUN   TestSkip
+    a_test.go:5: later
+--- SKIP: TestSkip (0.00s)
+FAIL
+FAIL	example.com/demo	0.162s
+FAIL

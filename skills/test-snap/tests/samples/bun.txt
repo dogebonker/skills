@@ -1,0 +1,25 @@
+bun test v1.3.14 (0d9b296a)
+
+b.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './missing' from '/tmp/bunsample/b.test.ts'
+-------------------------------
+
+
+a.test.ts:
+error: expect(received).toBe(expected)
+
+Expected: 2
+Received: 1
+
+(fail) Math > breaks [0.06ms]
+
+ 1 pass
+ 1 skip
+ 1 todo
+ 2 fail
+ 1 error
+ 2 expect() calls
+Ran 5 tests across 2 files. [5.00ms]

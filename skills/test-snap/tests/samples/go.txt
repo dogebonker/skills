@@ -1,0 +1,6 @@
+--- FAIL: TestFail (0.00s)
+    --- FAIL: TestFail/sub_one (0.00s)
+        a_test.go:4: boom
+FAIL
+FAIL	example.com/demo	0.294s
+FAIL

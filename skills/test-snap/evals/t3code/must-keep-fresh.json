@@ -1,0 +1,20 @@
+[
+  {
+    "file": "apps/desktop/src/updates/releaseNotes.test.ts",
+    "title": "does not count Markdown or HTML section headings as changes",
+    "source": "#24058",
+    "reason": "FRESH over-cut caught by review in #24058 and restored in its second commit. Release-notes heading skip, pins fix #9138."
+  },
+  {
+    "file": "apps/server/src/checkpointing/CheckpointStore.test.ts",
+    "title": "keeps a/ and b/ patch prefixes when the repository disables them",
+    "source": "#24058",
+    "reason": "FRESH over-cut caught by review in #24058 and restored in its second commit. Checkpoint diff.noprefix guard, pins fix #9438."
+  },
+  {
+    "file": "apps/server/src/cloud/ConnectReachability.test.ts",
+    "title": "each section names a heading in the user guide",
+    "source": "#24058",
+    "reason": "FRESH over-cut caught by review in #24058 and restored in its second commit. Troubleshooting doc-anchor contract between code and user guide."
+  }
+]
