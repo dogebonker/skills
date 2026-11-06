@@ -61,14 +61,16 @@ def schema_for(ids, categories):
 def claude_llm(system, prompt, schema, model, tools="", cwd=None, max_turns=None):
     """Real call. Returns (structured_output or None, reported cost in USD).
 
-    `tools` other than "" are pre-approved and everything else is denied (dontAsk), so no prompt can block.
+    `tools` other than "" are pre-approved inside `cwd` only and everything else is denied (dontAsk), so no
+    prompt can block and a prompt-injected test file cannot read outside the repo (an unscoped `Read`
+    rule was verified to read a file outside cwd).
     """
     # --setting-sources "" keeps user hooks, plugins and CLAUDE.md out of the call (verified: 7.7k -> 1.3k input tokens).
     cmd = ["claude", "-p", "--model", model, "--output-format", "json", "--json-schema", json.dumps(schema),
            "--tools", tools, "--strict-mcp-config", "--no-session-persistence", "--setting-sources", "",
            "--system-prompt", system]
     if tools:
-        cmd += ["--allowedTools", tools, "--permission-mode", "dontAsk"]
+        cmd += ["--allowedTools", ",".join(f"{t}(./**)" for t in tools.split(",")), "--permission-mode", "dontAsk"]
     if max_turns:
         cmd += ["--max-turns", str(max_turns)]
     p = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=900, cwd=cwd)

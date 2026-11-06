@@ -63,8 +63,9 @@ def validate(result, ids):
                 or not isinstance(r.get("covered_by"), (str, type(None)))
                 or not isinstance(r.get("evidence"), (str, type(None)))):
             return None
-        by_id[r["id"]] = {"verdict": r["verdict"], "reason": str(r.get("reason", "")),
-                          "covered_by": r["covered_by"], "evidence": r.get("evidence")}
+        # capped: model text reaches the report and possibly a PR body
+        by_id[r["id"]] = {"verdict": r["verdict"], "reason": str(r.get("reason", ""))[:300],
+                          "covered_by": r["covered_by"], "evidence": (r.get("evidence") or None) and r["evidence"][:300]}
     return by_id if len(by_id) == len(ids) else None
 
 

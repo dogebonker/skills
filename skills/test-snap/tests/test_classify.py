@@ -47,6 +47,19 @@ class ClassifyTest(unittest.TestCase):
         rows = classify.classify(tests, self.repo, judge, passes, fraction, concurrency, **kw)
         return {r["id"]: r for r in rows}, judge
 
+    def test_tools_are_preapproved_inside_the_repo_only(self):
+        # an unscoped `Read` let a prompt-injected test file read outside the repo into the report
+        from unittest import mock
+        seen = {}
+        def run(cmd, **kw):
+            seen["cmd"] = cmd
+            return mock.Mock(stdout=json.dumps({"structured_output": {}, "total_cost_usd": 0}), returncode=0)
+        with mock.patch.object(classify.subprocess, "run", run):
+            classify.claude_llm("s", "p", {}, "sonnet", tools="Read,Grep,Glob", cwd="/repo")
+        cmd = seen["cmd"]
+        self.assertEqual(cmd[cmd.index("--allowedTools") + 1], "Read(./**),Grep(./**),Glob(./**)")
+        self.assertEqual(cmd[cmd.index("--tools") + 1], "Read,Grep,Glob")
+
     def test_rubric_categories(self):
         cats = classify.rubric_categories(RUBRIC)
         self.assertGreaterEqual(len(cats), 17)
